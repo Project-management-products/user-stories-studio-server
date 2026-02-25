@@ -10,19 +10,19 @@ const app = express();
 // 1. Configuración de CORS (Asegúrate de que no haya "/" al final)
 const corsOptions = {
     origin: function (origin, callback) {
-        // 1. Definimos el patrón que buscas:
-        // ^https:\/\/  -> Empieza con https://
-        // user-stories-studio-client- -> Tu proyecto
-        // .* -> CUALQUIER COSA (el hash dinámico)
-        // -jjce77s-projects\.vercel\.app -> Tu scope y dominio
-        const allowedPattern = /^https:\/\/user-stories-studio-client-.*-jjce77s-projects\.vercel\.app$/;
-
-        // 2. Permitimos si cumple el patrón O si es localhost (para tus pruebas locales)
-        if (!origin || allowedPattern.test(origin) || origin.includes('localhost')) {
+        // 1. Si es localhost, pasa.
+        // 2. Si termina en "-jjce77s-projects.vercel.app", pasa (CUBRE TODAS TUS PREVIEWS).
+        // 3. Si es tu dominio de producción, pasa.
+        if (
+            !origin ||
+            origin.includes('localhost') ||
+            origin.endsWith('-jjce77s-projects.vercel.app') ||
+            origin.includes('user-stories-studio-client.vercel.app')
+        ) {
             callback(null, true);
         } else {
-            console.log("Bloqueado por CORS:", origin); // Útil para ver en los logs de Vercel quién falló
-            callback(new Error('No permitido por CORS'));
+            console.log("Bloqueado:", origin);
+            callback(new Error('Bloqueado por CORS'));
         }
     },
     methods: ['GET', 'POST', 'OPTIONS'],

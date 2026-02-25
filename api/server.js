@@ -8,29 +8,13 @@ dotenv.config();
 const app = express();
 
 // 1. Configuración de CORS (Asegúrate de que no haya "/" al final)
-const corsOptions = {
-    origin: function (origin, callback) {
-        // 1. Si es localhost, pasa.
-        // 2. Si termina en "-jjce77s-projects.vercel.app", pasa (CUBRE TODAS TUS PREVIEWS).
-        // 3. Si es tu dominio de producción, pasa.
-        if (
-            !origin ||
-            origin.includes('localhost') ||
-            origin.endsWith('-jjce77s-projects.vercel.app') ||
-            origin.includes('user-stories-studio-client.vercel.app')
-        ) {
-            callback(null, true);
-        } else {
-            console.log("Bloqueado:", origin);
-            callback(new Error('Bloqueado por CORS'));
-        }
-    },
-    methods: ['GET', 'POST', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    optionsSuccessStatus: 200
-};
 
-app.use(cors(corsOptions));
+app.use(cors({
+    origin: '*', // Permite a TODO el mundo
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'], // Permite TODOS los métodos
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 app.use(express.json());
 
 // 2. Inicialización de Google AI (Usa la variable de entorno de Vercel)

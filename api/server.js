@@ -9,22 +9,32 @@ const app = express();
 
 // 1. Configuración de CORS (Asegúrate de que no haya "/" al final)
 const allowedOrigins = [
-    'https://user-stories-studio-client.vercel.app', // producción
-    /^https:\/\/user-stories-studio-client-[\w-]+-jjce77s-projects\.vercel\.app$/, // previews
-    'http://localhost:5173/', // desarrollo local
+    'https://user-stories-studio-client.vercel.app',
+    /^https:\/\/user-stories-studio-client-[\w]+-jjce77s-projects\.vercel\.app$/,
+    'http://localhost:5173',
 ];
+
 app.use((req, res, next) => {
-    // Debug: Veremos en los logs de Vercel qué ruta está llegando realmente
-    console.log(`[Petición Recibida] Método: ${req.method} | URL: ${req.url}`);
+    const origin = req.headers.origin;
+    console.log(`[CORS] Origin recibido: ${origin}`);
 
-    res.header("Access-Control-Allow-Origin", "*"); // Permitir a todo el mundo (Frontend)
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    const isAllowed = allowedOrigins.some(o =>
+        typeof o === 'string' ? o === origin : o.test(origin)
+    );
 
-    // Si es una petición OPTIONS (preflight), respondemos OK inmediatamente
+    if (isAllowed) {
+        res.header('Access-Control-Allow-Origin', origin);
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+        res.header('Access-Control-Allow-Credentials', 'true');
+    }
+
+    console.log(`[CORS] ¿Permitido?: ${isAllowed}`);
+
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
     }
+
     next();
 });
 

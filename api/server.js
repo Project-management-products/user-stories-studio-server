@@ -2,7 +2,18 @@ import express, { json } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from "@google/genai";
+import cors from 'cors';
+const corsOptions = {
+    origin: [
+        'https://user-stories-studio-client-kecddi3aq-jjce77s-projects.vercel.app/', // URL de producción
+        'https://user-stories-studio-client-jy7zvc7w1-jjce77s-projects.vercel.app/', // URL de preview
+        'http://localhost:5173'                  //  URL local de Vite
+    ],
+    methods: 'GET,POST', // Solo permites estos métodos
+    optionsSuccessStatus: 200
+};
 
+app.use(cors(corsOptions));
 dotenv.config();
 
 const app = express();

@@ -10,7 +10,7 @@ const app = express();
 // 1. Configuración de CORS (Asegúrate de que no haya "/" al final)
 const corsOptions = {
     origin: [
-        'https://user-stories-studio-client-kecddi3aq-jjce77s-projects.vercel.app',
+        'https://user-stories-studio-client-iffly9nid-jjce77s-projects.vercel.app',
         'https://user-stories-studio-client-jy7zvc7w1-jjce77s-projects.vercel.app',
         'http://localhost:5173'
     ],

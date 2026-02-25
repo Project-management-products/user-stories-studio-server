@@ -152,7 +152,7 @@ app.post("/api/generate", async (req, res) => {
 });
 
 // 4. Ruta de salud para verificar despliegue
-app.get("/", (req, res) => res.send("Server OK"));
+app.get("/", (req, res) => res.send("Server OK 4:40"));
 app.get("/api/generate", (req, res) => {
     res.json({ message: "Servidor Express Online - API path /api/generate" });
 });

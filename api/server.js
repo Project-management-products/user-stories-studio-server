@@ -23,7 +23,9 @@ app.use(cors(corsOptions));
 app.use(express.json());
 
 // 2. Inicialización de Google AI (Usa la variable de entorno de Vercel)
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const ai = new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY
+});
 const STD_MARKDOWN = ` # Estándar de Redacción de Historias de Usuario
     1. **Formato:** "Como [rol], quiero [acción] para [beneficio]".
     2. **Criterios de Aceptación:** Deben usar el formato BDD (Dado, Cuando, Entonces).

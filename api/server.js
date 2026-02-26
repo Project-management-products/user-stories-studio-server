@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from "@google/genai";
-
+import cors from 'cors';
 
 dotenv.config();
 const app = express();

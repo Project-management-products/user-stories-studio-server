@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import dotenv from 'dotenv';
 import { GoogleGenAI, HarmCategory, HarmBlockThreshold } from "@google/genai";
 
@@ -8,35 +7,20 @@ dotenv.config();
 const app = express();
 
 // 1. Configuración de CORS (Asegúrate de que no haya "/" al final)
+const localOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
+    : [];
+
 const allowedOrigins = [
     'https://user-stories-studio-client.vercel.app',
     /^https:\/\/user-stories-studio-client-[\w]+-jjce77s-projects\.vercel\.app$/,
-    'http://localhost:5173',
+    ...localOrigins,
 ];
 
-app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    console.log(`[CORS] Origin recibido: ${origin}`);
-
-    const isAllowed = allowedOrigins.some(o =>
-        typeof o === 'string' ? o === origin : o.test(origin)
-    );
-
-    if (isAllowed) {
-        res.header('Access-Control-Allow-Origin', origin);
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-        res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-        res.header('Access-Control-Allow-Credentials', 'true');
-    }
-
-    console.log(`[CORS] ¿Permitido?: ${isAllowed}`);
-
-    if (req.method === 'OPTIONS') {
-        return res.status(200).end();
-    }
-
-    next();
-});
+app.use(cors({
+    origin: allowedOrigins,
+    credentials: true,
+}));
 
 app.use(express.json());
 
@@ -152,7 +136,7 @@ app.post("/api/generate", async (req, res) => {
 });
 
 // 4. Ruta de salud para verificar despliegue
-app.get("/", (req, res) => res.send("Server OK 4:40"));
+app.get("/", (req, res) => res.send("Server OK"));
 app.get("/api/generate", (req, res) => {
     res.json({ message: "Servidor Express Online - API path /api/generate" });
 });

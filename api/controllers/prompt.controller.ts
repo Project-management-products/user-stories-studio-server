@@ -15,7 +15,6 @@ export class PromptController {
     private promptService = new PromptService();
 
     async generate(req: Request, res: Response, next: NextFunction) {
-        console.log("DEBUG - Request Body:", JSON.stringify(req.body, null, 2));
         try {
             const validated = promptSchema.parse(req.body);
 

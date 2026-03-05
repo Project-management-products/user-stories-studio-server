@@ -3,7 +3,6 @@ import { PromptService } from "../services/prompt.service.js";
 import { z } from "zod";
 
 const promptSchema = z.object({
-    projectId: z.string().min(1),
     email: z.string().email(),
     prompt: z.string().min(1),
     context: z.string().optional().default("General"),
@@ -16,10 +15,16 @@ export class PromptController {
 
     async generate(req: Request, res: Response, next: NextFunction) {
         try {
+            const projectId = req.params.projectId as string;
             const validated = promptSchema.parse(req.body);
 
+            if (!projectId) {
+                res.status(400).json({ error: "projectId is required in the path" });
+                return;
+            }
+
             const result = await this.promptService.processPrompt(
-                validated.projectId,
+                projectId,
                 validated.email,
                 validated.prompt,
                 validated.context,

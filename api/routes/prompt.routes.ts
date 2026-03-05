@@ -6,21 +6,26 @@ const promptController = new PromptController();
 
 /**
  * @openapi
- * /api/generate-user-story:
+ * /api/{projectId}/generate:
  *   post:
- *     summary: Generar contenido de IA (User Stories, informes, etc.)
- *     description: Punto unificado para procesar prompts con diferentes proveedores de IA.
+ *     summary: Generar contenido de IA por proyecto
+ *     description: Procesar prompts vinculados a un proyecto específico.
  *     tags: [AI Gateway]
+ *     parameters:
+ *       - in: path
+ *         name: projectId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: ID del proyecto (e.g., user-stories-studio, vtt-reports-analysis)
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
- *             required: [projectId, email, prompt]
+ *             required: [email, prompt]
  *             properties:
- *               projectId:
- *                 type: string
  *               email:
  *                 type: string
  *               prompt:
@@ -39,6 +44,6 @@ const promptController = new PromptController();
  *       500:
  *         description: Error interno del servidor o del proveedor de IA
  */
-router.post("/generate-user-story", (req, res, next) => promptController.generate(req, res, next));
+router.post("/:projectId/generate", (req, res, next) => promptController.generate(req, res, next));
 
 export default router;

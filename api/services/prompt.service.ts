@@ -26,6 +26,10 @@ export class PromptService {
             this.projectRepo.getProjectById(projectId)
         ]);
 
+        if (!project) {
+            throw new Error(`Project with ID ${projectId} not found`);
+        }
+
         // 2. Select AI Provider (preferring DB config)
         const activeProvider = provider || await getConfig("ACTIVE_IA_PROVIDER", "google");
         const adapter = AIFactory.getAdapter(activeProvider);

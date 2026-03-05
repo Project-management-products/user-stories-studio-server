@@ -14,36 +14,22 @@ export class GoogleAdapter implements AIAdapter {
         this.ai = new GoogleGenAI({ apiKey });
     }
 
-    async generate(prompt: string, context: string, modelId?: string): Promise<NormalizedResponse> {
+    async generate(
+        prompt: string,
+        context: string,
+        modelId?: string,
+        systemInstruction?: string,
+        markdownStandard?: string,
+        systemConstraints?: string
+    ): Promise<NormalizedResponse> {
         const start = Date.now();
         const modelName = modelId || this.defaultModel;
 
-        const SYSTEM_INSTRUCTION = `
-            Eres un Product Owner experto. Tu trabajo es transformar ideas en requerimientos técnicos. 
-            Debes seguir ESTRICTAMENTE el siguiente estándar de la empresa:
-        `;
+        const defaultInstruction = "Eres un Asistente experto. Tu trabajo es transformar ideas en contenidos útiles.";
+        const defaultMarkdown = "Utiliza formato Markdown estándar.";
+        const defaultConstraints = "Responde únicamente con el contenido solicitado sin charla trivial.";
 
-        const STD_MARKDOWN = ` # Estándar de Redacción de Historias de Usuario 
-            ## **Historia de Usuario:**
-            ### 1. **Título:** Debe ser corto y descriptivo.
-            ### 2. **Descripción:** 
-            "**Como** [rol], **quiero** [acción] **para** [beneficio]".
-            ### 3. **Criterios de Aceptación:** Deben usar el formato BDD (Dado, Cuando, Entonces).
-            ### 4. **Consideraciones técnicas:**
-        `;
-
-        const SYSTEM_CONSTRAINTS = `
-            Responde únicamente con el bloque de código/texto solicitado. Elimina toda charla trivial, introducciones, conclusiones o confirmaciones de que entendiste la tarea. Si te pido un cambio en un texto, entrega solo el texto modificado.
-            1. Usar tono técnico, directo y sin ambigüedades.
-            2. No debes generar código.
-            3. No debes generar archivos.
-            4. No debes generar imágenes.
-            5. No debes generar audio.
-            6. No debes generar video.
-            7. Elimina toda charla trivial, introducciones, conclusiones o confirmaciones de que entendiste la tarea. 
-        `;
-
-        const instruction = `${SYSTEM_INSTRUCTION}\n${STD_MARKDOWN}\n${SYSTEM_CONSTRAINTS}`;
+        const instruction = `${systemInstruction || defaultInstruction}\n${markdownStandard || defaultMarkdown}\n${systemConstraints || defaultConstraints}`;
         const fullPrompt = `Contexto:\n${context}\n\nPrompt:\n${prompt}`;
 
         try {

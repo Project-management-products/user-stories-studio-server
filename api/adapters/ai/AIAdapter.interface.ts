@@ -10,5 +10,12 @@ export interface NormalizedResponse {
 }
 
 export interface AIAdapter {
-    generate(prompt: string, context: string, modelId?: string): Promise<NormalizedResponse>;
+    generate(
+        prompt: string,
+        context: string,
+        modelId?: string,
+        systemInstruction?: string,
+        markdownStandard?: string,
+        systemConstraints?: string
+    ): Promise<NormalizedResponse>;
 }

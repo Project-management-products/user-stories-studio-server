@@ -1,15 +1,18 @@
 import { dbClient } from "./database.js";
 
 export const initDb = async () => {
-    console.log("Initializing database schema...");
+  console.log("Initializing database schema...");
 
-    try {
-        // 1. Projects table
-        await dbClient.execute(`
+  try {
+    // 1. Projects table
+    await dbClient.execute(`
       CREATE TABLE IF NOT EXISTS projects (
         id TEXT PRIMARY KEY,
         name TEXT NOT NULL UNIQUE,
         description TEXT,
+        system_instruction TEXT,
+        markdown_standard TEXT,
+        system_constraints TEXT,
         active INTEGER DEFAULT 1,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -17,8 +20,8 @@ export const initDb = async () => {
       )
     `);
 
-        // 2. Users table
-        await dbClient.execute(`
+    // 2. Users table
+    await dbClient.execute(`
       CREATE TABLE IF NOT EXISTS users (
         id TEXT PRIMARY KEY,
         email TEXT NOT NULL UNIQUE,
@@ -31,8 +34,8 @@ export const initDb = async () => {
       )
     `);
 
-        // 3. Interactions table
-        await dbClient.execute(`
+    // 3. Interactions table
+    await dbClient.execute(`
       CREATE TABLE IF NOT EXISTS interactions (
         id TEXT PRIMARY KEY,
         project_id TEXT REFERENCES projects(id),
@@ -49,8 +52,8 @@ export const initDb = async () => {
       )
     `);
 
-        // 4. Config store table
-        await dbClient.execute(`
+    // 4. Config store table
+    await dbClient.execute(`
       CREATE TABLE IF NOT EXISTS config_store (
         key TEXT PRIMARY KEY,
         value TEXT NOT NULL,
@@ -61,14 +64,14 @@ export const initDb = async () => {
       )
     `);
 
-        console.log("Database schema initialized successfully.");
-    } catch (error) {
-        console.error("Error initializing database schema:", error);
-        throw error;
-    }
+    console.log("Database schema initialized successfully.");
+  } catch (error) {
+    console.error("Error initializing database schema:", error);
+    throw error;
+  }
 };
 
 // If run directly
 if (import.meta.url.endsWith("init-db.ts")) {
-    initDb();
+  initDb();
 }

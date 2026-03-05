@@ -19,11 +19,14 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
 
 app.use(cors({
     origin: (origin, callback) => {
+        logger.info({ origin }, "Incoming request origin");
         // allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
         if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith(".vercel.app")) {
+            logger.info({ origin, allowed: true }, "CORS Access Granted");
             callback(null, true);
         } else {
+            logger.warn({ origin, allowed: false }, "CORS Access Denied");
             callback(new Error("Not allowed by CORS"));
         }
     },

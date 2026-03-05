@@ -18,40 +18,73 @@ export class GoogleAdapter implements AIAdapter {
         const start = Date.now();
         const modelName = modelId || this.defaultModel;
 
-        const systemInstruction = `
-            Eres un experto en IA diseñado para actuar como un Gateway de prompts. 
-            Tu objetivo es generar respuestas de alta calidad basadas en el contexto y el prompt proporcionado.
-            La respuesta DEBE ser un objeto JSON válido con la siguiente estructura:
-            {
-                "story_text": "...",
-                "acceptance_criteria": ["...", "..."],
-                "suggestions": ["...", "..."]
-            }
-            No incluyas explicaciones, saludos ni bloques de código markdown, solo el JSON puro.
-        `.trim();
+        const SYSTEM_INSTRUCTION = `
+            Eres un Product Owner experto. Tu trabajo es transformar ideas en requerimientos técnicos. 
+            Debes seguir ESTRICTAMENTE el siguiente estándar de la empresa:
+        `;
 
-        const fullPrompt = `Contexto: ${context}\n\nPrompt: ${prompt}`;
+        const STD_MARKDOWN = ` # Estándar de Redacción de Historias de Usuario 
+            ## **Historia de Usuario:**
+            ### 1. **Título:** Debe ser corto y descriptivo.
+            ### 2. **Descripción:** 
+            "**Como** [rol], **quiero** [acción] **para** [beneficio]".
+            ### 3. **Criterios de Aceptación:** Deben usar el formato BDD (Dado, Cuando, Entonces).
+            ### 4. **Consideraciones técnicas:**
+        `;
+
+        const SYSTEM_CONSTRAINTS = `
+            Responde únicamente con el bloque de código/texto solicitado. Elimina toda charla trivial, introducciones, conclusiones o confirmaciones de que entendiste la tarea. Si te pido un cambio en un texto, entrega solo el texto modificado.
+            1. Usar tono técnico, directo y sin ambigüedades.
+            2. No debes generar código.
+            3. No debes generar archivos.
+            4. No debes generar imágenes.
+            5. No debes generar audio.
+            6. No debes generar video.
+            7. Elimina toda charla trivial, introducciones, conclusiones o confirmaciones de que entendiste la tarea. 
+        `;
+
+        const instruction = `${SYSTEM_INSTRUCTION}\n${STD_MARKDOWN}\n${SYSTEM_CONSTRAINTS}`;
+        const fullPrompt = `Contexto:\n${context}\n\nPrompt:\n${prompt}`;
 
         try {
+            console.log("DEBUG - AI Request model:", modelName);
             const result = await (this.ai as any).models.generateContent({
                 model: modelName,
-                systemInstruction: systemInstruction,
                 contents: [{ role: "user", parts: [{ text: fullPrompt }] }],
                 config: {
+                    systemInstruction: instruction,
                     temperature: 0.2,
-                    responseMimeType: "application/json",
+                    safetySettings: [
+                        { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+                        { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_ONLY_HIGH },
+                    ],
                 }
             });
 
-            // For Gemini 1.x response might be in result.response.text()
-            // In some versions of this experimental SDK it might be directly in result.text
-            const responseText = typeof result.text === "function" ? result.text() : result.text;
-            const parsed = typeof responseText === "string" ? JSON.parse(responseText) : responseText;
+            // Depuración profunda del objeto de respuesta
+            // console.log("RAW RESULT FROM GEMINI:", JSON.stringify(result, null, 2));
+
+            let responseText = "";
+
+            // Intentamos obtener el texto de todas las formas posibles que usa el SDK
+            if (result.text && typeof result.text !== "function") {
+                responseText = result.text;
+            } else if (typeof result.text === "function") {
+                responseText = result.text();
+            } else if (result.response) {
+                if (typeof result.response.text === "function") {
+                    responseText = result.response.text();
+                } else if (result.response.candidates && result.response.candidates[0]?.content?.parts[0]?.text) {
+                    responseText = result.response.candidates[0].content.parts[0].text;
+                }
+            }
+
+            console.log("DEBUG - Extracted Text Length:", responseText.length);
 
             return {
-                story_text: parsed.story_text || "",
-                acceptance_criteria: parsed.acceptance_criteria || [],
-                suggestions: parsed.suggestions || [],
+                story_text: responseText,
+                acceptance_criteria: [],
+                suggestions: [],
                 metadata: {
                     provider: "google",
                     model: modelName,

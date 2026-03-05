@@ -90,3 +90,7 @@ docker-compose.override.yml
 # Archivos de prueba temporales
 test-*.json
 *-test.json
+
+# Archivos de prueba temporales
+test*.js
+

@@ -15,6 +15,7 @@ export class PromptController {
     private promptService = new PromptService();
 
     async generate(req: Request, res: Response, next: NextFunction) {
+        console.log("DEBUG - Request Body:", JSON.stringify(req.body, null, 2));
         try {
             const validated = promptSchema.parse(req.body);
 
@@ -26,8 +27,15 @@ export class PromptController {
                 validated.modelId,
                 validated.provider
             );
+            console.log("DEBUG - Response:", JSON.stringify(result, null, 2));
 
-            res.status(200).json(result);
+            // 4. Return response (including legacy compatibility)
+            res.status(200).json({
+                ...result,
+                content: [
+                    { text: result.story_text }
+                ]
+            });
         } catch (error) {
             next(error);
         }

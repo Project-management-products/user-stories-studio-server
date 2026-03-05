@@ -10,7 +10,7 @@ Este documento define las especificaciones técnicas para el **User Stories Stud
 ### 2.1. Endpoint Unificado
 El servidor expondrá un único endpoint para la generación de contenido.
 
-* **Ruta:** `POST /api/generate-story`
+* **Ruta:** `POST /api/generate-user-story`
 * **Content-Type:** `application/json`
 
 #### Esquema de Solicitud (Request)
@@ -47,7 +47,7 @@ Independientemente del proveedor (Google/Anthropic), el backend **siempre** devo
 ### 2.2. Documentación (Swagger/OpenAPI)
 * **Ruta:** `/api-docs`
 * **Implementación:** `swagger-ui-express` + `swagger-jsdoc`.
-* **Requisito:** Debe permitir probar el endpoint `/api/generate-story` directamente desde la interfaz web.
+* **Requisito:** Debe permitir probar el endpoint `/api/generate-user-story` directamente desde la interfaz web.
 
 ---
 

@@ -4,8 +4,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export class AnthropicAdapter implements AIAdapter {
-    private defaultModel = "claude-3-5-sonnet-20241022";
-    // private defaultModel = "claude-sonnet-4-20250514";
+    private defaultModel = "claude-sonnet-4-20250514";
 
     async generate(
         prompt: string,

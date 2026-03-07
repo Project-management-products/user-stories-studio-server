@@ -13,7 +13,7 @@ export class ProjectRepository {
     async getProjectById(id: string): Promise<Project | null> {
         const result = await dbClient.execute({
             sql: `SELECT * FROM projects WHERE id = ? AND active = 1`,
-            args: [id]
+            args: [id.trim()]
         });
 
         if (result.rows.length === 0) return null;

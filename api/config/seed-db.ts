@@ -11,10 +11,10 @@ export const seedDb = async () => {
             { key: "PERSISTENCE_ENABLED", value: "true" },
             { key: "MAX_PAYLOAD_SIZE", value: "50mb" },
             { key: "AVAILABLE_PROVIDERS", value: JSON.stringify(["google", "anthropic"]) },
-            { key: "GOOGLE_DEFAULT_MODEL", value: "gemini-2.5-flash" },
-            { key: "ANTHROPIC_DEFAULT_MODEL", value: "claude-sonnet-4-20250514" },
-            { key: "SUPPORTED_MODELS_GOOGLE", value: JSON.stringify(["gemini-2.5-flash", "gemini-1.5-pro"]) },
-            { key: "SUPPORTED_MODELS_ANTHROPIC", value: JSON.stringify(["claude-sonnet-4-20250514", "claude-3-5-haiku-20241022"]) }
+            { key: "GOOGLE_DEFAULT_MODEL", value: "gemini-1.5-flash" },
+            { key: "ANTHROPIC_DEFAULT_MODEL", value: "claude-3-5-sonnet-20241022" },
+            { key: "SUPPORTED_MODELS_GOOGLE", value: JSON.stringify(["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"]) },
+            { key: "SUPPORTED_MODELS_ANTHROPIC", value: JSON.stringify(["claude-3-5-sonnet-20241022", "claude-3-5-haiku-20241022"]) }
         ];
         for (const config of configs) {
             await dbClient.execute({
@@ -35,7 +35,7 @@ export const seedDb = async () => {
                 system_constraints: "Responde únicamente con el bloque de código/texto solicitado. Elimina toda charla trivial, introducciones, conclusiones o confirmaciones de que entendiste la tarea. Usar tono técnico, directo y sin ambigüedades."
             },
             {
-                id: "vtt-reports",
+                id: "vtt-reports-analysis",
                 name: "VTT Report Generator",
                 description: "Generador de informes a partir de transcripciones VTT",
                 system_instruction: "Actúa como un Estratega de Efectividad Organizacional y Especialista en Comunicación Corporativa senior. Tu función es procesar transcripciones de reuniones optimizadas (que incluyen duraciones de habla [Xs] y métricas pre-calculadas) para extraer inteligencia de negocio. Debes transformar los datos crudos en un reporte detallado que preserve el contexto de las decisiones y evalúe la eficiencia operativa.",

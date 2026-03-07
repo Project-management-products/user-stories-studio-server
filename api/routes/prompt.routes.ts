@@ -44,6 +44,9 @@ const promptController = new PromptController();
  *       500:
  *         description: Error interno del servidor o del proveedor de IA
  */
-router.post("/:projectId/generate", (req, res, next) => promptController.generate(req, res, next));
+router.post("/:projectId/generate", (req, res, next) => {
+    console.log(`DEBUG - Route reached: /api/${req.params.projectId}/generate`);
+    return promptController.generate(req, res, next);
+});
 
 export default router;

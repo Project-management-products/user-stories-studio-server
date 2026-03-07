@@ -13,6 +13,11 @@ const app = express();
 const logger = pino();
 
 // Middleware
+app.use((req, res, next) => {
+    logger.info({ method: req.method, url: req.url }, "Incoming Request");
+    next();
+});
+
 const allowedOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(",")
     : ["http://localhost:5173", "http://localhost:5174", "https://user-stories-studio-client.vercel.app"];
@@ -47,7 +52,7 @@ app.use("/api", promptRoutes);
 
 // General health check
 app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", timestamp: new Date(), version: "1.0.0" });
+    res.json({ status: "ok", timestamp: new Date(), version: "1.1.0-debug" });
 });
 
 // Error handling

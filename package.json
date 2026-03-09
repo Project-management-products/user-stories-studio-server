@@ -1,7 +1,6 @@
 {
     "name": "ai-gateway-server",
     "version": "1.0.0",
-    "type": "module",
     "scripts": {
         "start": "node dist/server.js",
         "dev": "tsx watch api/server.ts",

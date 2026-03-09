@@ -1,5 +1,5 @@
 import { dbClient } from "../config/database.js";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "node:crypto";
 
 export class UserRepository {
     async getUserByEmail(email: string) {
@@ -13,7 +13,7 @@ export class UserRepository {
     async getOrCreateUser(email: string) {
         let user = await this.getUserByEmail(email);
         if (!user) {
-            const id = uuidv4();
+            const id = randomUUID();
             await dbClient.execute({
                 sql: `INSERT INTO users (id, email) VALUES (?, ?)`,
                 args: [id, email]

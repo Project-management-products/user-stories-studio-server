@@ -1,35 +1,10 @@
 {
     "$schema": "https://openapi.vercel.sh/vercel.json",
     "framework": null,
-    "functions": {
-        "api/server.ts": {
-            "memory": 1024,
-            "maxDuration": 10
-        }
-    },
     "rewrites": [
         {
             "source": "/(.*)",
-            "destination": "/api/server.ts"
-        }
-    ],
-    "headers": [
-        {
-            "source": "/api/(.*)",
-            "headers": [
-                {
-                    "key": "Access-Control-Allow-Origin",
-                    "value": "*"
-                },
-                {
-                    "key": "Access-Control-Allow-Methods",
-                    "value": "GET, POST, PUT, DELETE, OPTIONS"
-                },
-                {
-                    "key": "Access-Control-Allow-Headers",
-                    "value": "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-                }
-            ]
+            "destination": "/api/index.ts"
         }
     ]
 }

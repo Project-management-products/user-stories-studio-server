@@ -15,7 +15,7 @@ const options: swaggerJSDoc.Options = {
             },
         ],
     },
-    apis: ["./api/routes/*.ts", "./api/routes/*.js"], // Supports both TS (dev) and JS (build)
+    apis: ["./src/routes/*.ts", "./src/routes/*.js"], // Supports both TS (dev) and JS (build), routes on real path
 };
 
 export const swaggerSpec = swaggerJSDoc(options);

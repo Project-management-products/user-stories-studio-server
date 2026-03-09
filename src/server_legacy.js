@@ -16,6 +16,7 @@ const allowedOrigins = [
     /^https:\/\/user-stories-studio-client-[\w]+-jjce77s-projects\.vercel\.app$/,
     ...localOrigins,
 ];
+console.info(localOrigins);
 
 app.use(cors({
     origin: allowedOrigins,
@@ -28,23 +29,25 @@ app.use(express.json());
 const ai = new GoogleGenAI({
     apiKey: process.env.GEMINI_API_KEY
 });
-const STD_MARKDOWN = ` # Estándar de Redacción de Historias de Usuario
-    **Historia de Usuario:**
-    1. **Título:** Debe ser corto y descriptivo.
-    2. **Descripción:** 
+const SYSTEM_INSTRUCTION = `
+    Eres un Product Owner experto. Tu trabajo es transformar ideas en requerimientos técnicos. 
+    Debes seguir ESTRICTAMENTE el siguiente estándar de la empresa:
+    `;
+
+const STD_MARKDOWN = ` # Estándar de Redacción de Historias de Usuario 
+    ## **Historia de Usuario:**
+    ### 1. **Título:** Debe ser corto y descriptivo.
+    ### 2. **Descripción:** 
     "Como [rol], quiero [acción] para [beneficio]".
-    3. **Criterios de Aceptación:** Deben usar el formato BDD (Dado, Cuando, Entonces).
-    5. Consideraciones técnicas.
+    ### 3. **Criterios de Aceptación:** Deben usar el formato BDD (Dado, Cuando, Entonces).
+    ### 4. **Consideraciones técnicas:**
     `;
 const FEW_SHOT_EXAMPLES = `
     Ejemplo 1:
     - Idea: Recuperar contraseña.
     - Resultado esperado: Como usuario no autenticado, quiero recuperar mi contraseña mediante mi correo para volver a acceder a mi cuenta.
     `;// Puedes quitar esta línea hasta que tengas ejemplos reales
-const SYSTEM_INSTRUCTION = `
-    Eres un Product Owner experto. Tu trabajo es transformar ideas en requerimientos técnicos. 
-    Debes seguir ESTRICTAMENTE el siguiente estándar de la empresa:
-    `;
+
 const SYSTEM_CONSTRAINTS = `
     Responde únicamente con el bloque de código/texto solicitado,  Elimina toda charla trivial, introducciones, conclusiones o confirmaciones de que entendiste la tarea. Si te pido un cambio en un texto, entrega solo el texto modificado
     1. Usar tono técnico, directo y sin ambigüedades.
@@ -145,6 +148,7 @@ const port = process.env.PORT || 3000; // Intenta leer el puerto del entorno o u
 if (process.env.NODE_ENV == 'dev') {
     const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
+        console.info(localOrigins);
         console.log(`Ejecución local en: http://localhost:${PORT}`);
     });
 }

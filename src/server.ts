@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
 import { errorHandler } from "./middlewares/errorHandler.js";
 import promptRoutes from "./routes/prompt.routes.js";
@@ -19,8 +18,7 @@ app.use((req, res, next) => {
 });
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(",")
-    : ["http://localhost:5173", "http://localhost:5174", "https://user-stories-studio-client.vercel.app"];
+    ? process.env.ALLOWED_ORIGINS.split(",") : ["https://user-stories-studio-client.vercel.app"];
 
 app.use(cors({
     origin: (origin, callback) => {
@@ -45,7 +43,38 @@ app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.get("/", (req, res) => res.send("AI Gateway Server OK - Status: Healthy"));
 
 // API Docs
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get("/api-docs.json", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.send(swaggerSpec);
+});
+app.get("/api-docs", (req, res) => {
+    res.type("html").send(`<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>API Docs</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+</head>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-standalone-preset.js"></script>
+  <script>
+    window.onload = function () {
+      window.ui = SwaggerUIBundle({
+        url: '/api-docs.json',
+        dom_id: '#swagger-ui',
+        deepLinking: true,
+        presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
+        layout: 'StandaloneLayout'
+      });
+    };
+  </script>
+</body>
+</html>`);
+});
+app.get("/api-docs/", (req, res) => res.redirect(302, "/api-docs"));
 
 // Unified prompt route
 app.use("/api", promptRoutes);

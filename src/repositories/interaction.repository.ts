@@ -1,6 +1,6 @@
 import { dbClient } from "../config/database.js";
 import type { NormalizedResponse } from "../adapters/ai/AIAdapter.interface.js";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "node:crypto";
 
 export class InteractionRepository {
     async saveInteraction(
@@ -9,7 +9,7 @@ export class InteractionRepository {
         promptPayload: any,
         response: NormalizedResponse
     ) {
-        const id = uuidv4();
+        const id = randomUUID();
         try {
             await dbClient.execute({
                 sql: `

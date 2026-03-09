@@ -4,10 +4,19 @@
     "rewrites": [
         {
             "source": "/(.*)",
-            "destination": "/api/index.ts"
+            "destination": "/api/index"
         }
     ],
     "headers": [
+        {
+            "source": "/api-docs(.*)",
+            "headers": [
+                {
+                    "key": "Cache-Control",
+                    "value": "no-store, max-age=0"
+                }
+            ]
+        },
         {
             "source": "/(.*)",
             "headers": [

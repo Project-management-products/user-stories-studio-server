@@ -1,5 +1,5 @@
 import { dbClient } from "./database.js";
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "node:crypto";
 
 export const seedDb = async () => {
     console.log("Seeding database with initial data...");

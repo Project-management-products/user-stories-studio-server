@@ -3,6 +3,9 @@
     "framework": null,
     "buildCommand": "npm run build",
     "outputDirectory": "dist",
+    "functions": {
+        "dist/server.js": {}
+    },
     "rewrites": [
         {
             "source": "/(.*)",

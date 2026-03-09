@@ -72,6 +72,6 @@ export const initDb = async () => {
 };
 
 // If run directly
-if (import.meta.url.endsWith("init-db.ts")) {
+if (require.main === module) {
   initDb();
 }

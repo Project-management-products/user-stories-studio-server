@@ -67,6 +67,6 @@ export const seedDb = async () => {
 };
 
 // If run directly
-if (import.meta.url.endsWith("seed-db.ts")) {
+if (require.main === module) {
     seedDb();
 }

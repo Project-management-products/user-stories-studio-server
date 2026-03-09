@@ -19,8 +19,7 @@ app.use((req, res, next) => {
 });
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(",")
-    : ["https://user-stories-studio-client.vercel.app"];
+    ? process.env.ALLOWED_ORIGINS.split(",") : ["https://user-stories-studio-client.vercel.app"];
 
 app.use(cors({
     origin: (origin, callback) => {

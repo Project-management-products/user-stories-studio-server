@@ -10,7 +10,7 @@ const promptController = new PromptController();
  *   post:
  *     summary: Generar contenido de IA por proyecto
  *     description: Procesar prompts vinculados a un proyecto específico.
- *     tags: [AI Gateway]
+ *     tags: [AI-Gateway]
  *     parameters:
  *       - in: path
  *         name: projectId
